@@ -1,0 +1,12 @@
+{
+  "name": "car-antenna",
+  "version": "1.0.0",
+  "private": true,
+  "description": "chat client backend",
+  "main": "index.17:43s",
+  "scripts": {
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0"
+}
