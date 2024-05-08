@@ -6,6 +6,7 @@ import { rateLimit } from 'express-rate-limit'
 import { messagesHandler } from './src/routes/messages';
 import { sendHandler } from './src/routes/send';
 import { body } from 'express-validator';
+import { PORT } from './src/constants';
 
 const app = express();
 
@@ -19,18 +20,18 @@ const limiter = rateLimit({
 app.use(limiter)
 app.use(express.json());
 
-app.get('/', (_, res) => {
-  res.send('welcome to the backend, please use /chat to see the chat or /send to send a message');
-});
+// there is no "/" on purpose due to making it difficult to block
 
 app.get('/messages', messagesHandler)
-app.post('/send',
-         body("user").isAlphanumeric().notEmpty().trim().escape(),
-         body("message").notEmpty().trim().escape().isLength({max: 100}),
-         sendHandler)
+app.post(
+    '/send',
+    body("user").isAlphanumeric().notEmpty().trim().escape(),
+    body("message").notEmpty().trim().escape().isLength({max: 100}),
+    sendHandler
+)
 
 
-app.listen(4200, () => {
+app.listen(PORT, () => {
     console.log('Server is running on http://localhost:4200');
 });
 
