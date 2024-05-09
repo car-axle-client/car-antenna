@@ -12,7 +12,7 @@ const app = express();
 
 const limiter = rateLimit({
 	windowMs: 1000, 
-	limit: 1, 
+	limit: 2, 
 	standardHeaders: 'draft-7',
 	legacyHeaders: false,
 })
@@ -32,7 +32,7 @@ app.post(
 
 
 app.listen(PORT, () => {
-    console.log('Server is running on http://localhost:4200');
+    console.log('Server is running on port ' + PORT);
 });
 
 

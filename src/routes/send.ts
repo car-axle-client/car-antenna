@@ -3,10 +3,12 @@ import { Message } from "../types";
 import fs from 'fs';
 import express from 'express';
 import { validationResult } from 'express-validator';
+import Filter from 'bad-words';
 
 var chat: Message[] = JSON.parse(fs.readFileSync(STOREDMESSAGES, 'utf-8'));
 
 const sendHandler = (req: express.Request, res: express.Response ) => {
+
     const valid = validationResult(req);
 
     if (!valid.isEmpty()) {
@@ -15,11 +17,21 @@ const sendHandler = (req: express.Request, res: express.Response ) => {
     }
 
     // checks if req.body is a valid Message
-    const message: Message = req.body;
+    let message: Message = req.body;
     if (!message.user || !message.message) {
         res.status(400).send('Invalid message');
         return;
     }
+
+    let filter = new Filter();
+    
+    if (filter.isProfane(message.user)) {
+        res.status(400).send('Invalid message');
+        return;
+    }
+
+    message.message = filter.clean(message.message);
+
 
     // writes the message to the file
     chat.push(message);
