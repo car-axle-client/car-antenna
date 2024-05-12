@@ -1,14 +1,24 @@
-import { STOREDMESSAGES } from "../constants";
 import { Message } from "../types";
-import fs from 'fs';
 import express from 'express';
 import { validationResult } from 'express-validator';
 import Filter from 'bad-words';
+import { MongoClient } from 'mongodb';
 
-var chat: Message[] = JSON.parse(fs.readFileSync(STOREDMESSAGES, 'utf-8'));
+const client = new MongoClient(process.env.MONGO_URI || '');
+
+connect().catch(console.error);
+
+async function connect() {
+    await client.connect();
+}
+
+async function insertMessage(message: Message) {
+    const result = await client.db('chat').collection('messages').insertOne(message);
+    console.log('Inserted message with id: ' + result.insertedId);
+}
 
 const sendHandler = (req: express.Request, res: express.Response ) => {
-
+    
     const valid = validationResult(req);
 
     if (!valid.isEmpty()) {
@@ -32,18 +42,10 @@ const sendHandler = (req: express.Request, res: express.Response ) => {
 
     message.message = filter.clean(message.message);
 
+    insertMessage(message);
 
-    // writes the message to the file
-    chat.push(message);
-
-    fs.writeFile(STOREDMESSAGES, JSON.stringify(chat), (err) => {
-        if (err) {
-            res.status(500).send('Internal server error');
-            return;
-        }
-    });
     
     res.send('Message sent successfully');
 }
 
-export { sendHandler, chat };
+export { sendHandler, client };

@@ -1,9 +1,13 @@
 import express from 'express';
-import { chat } from "./send";
+import { client } from './send';
 
 const messagesHandler = (_: express.Request, res: express.Response) => {
     res.header("Content-Type",'application/json');
-    res.send(JSON.stringify(chat))
+
+    const collection = client.db('chat').collection('messages');
+    collection.find().toArray().then(messages => {
+        res.json(messages);
+    });
 }
 
 export { messagesHandler };

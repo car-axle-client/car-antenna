@@ -8,6 +8,7 @@ import { sendHandler } from './src/routes/send';
 import { body } from 'express-validator';
 import { PORT } from './src/constants';
 import cors from 'cors';
+import { MongoClient } from 'mongodb';
 
 const app = express();
 
