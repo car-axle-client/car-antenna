@@ -7,8 +7,17 @@ import { messagesHandler } from './src/routes/messages';
 import { sendHandler } from './src/routes/send';
 import { body } from 'express-validator';
 import { PORT } from './src/constants';
+import cors from 'cors';
 
 const app = express();
+
+var corsOptions = {
+    // this is due to the frontend being able to used on every domainp
+    origin: '*',
+    optionsSuccessStatus: 200
+}
+
+
 
 const limiter = rateLimit({
 	windowMs: 1000, 
@@ -22,9 +31,10 @@ app.use(express.json());
 
 // there is no "/" on purpose due to making it difficult to block
 
-app.get('/messages', messagesHandler)
+app.get('/messages', cors(corsOptions),messagesHandler)
 app.post(
     '/send',
+    cors(corsOptions),
     body("user").isAlphanumeric().notEmpty().trim().escape(),
     body("message").notEmpty().trim().escape().isLength({max: 100}),
     sendHandler
