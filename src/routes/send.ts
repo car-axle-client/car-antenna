@@ -7,14 +7,19 @@ import { MongoClient } from 'mongodb';
 const client = new MongoClient(process.env.MONGO_URI || '');
 
 connect().catch(console.error);
-
+const collection = client.db('chat').collection('messages');
 async function connect() {
     await client.connect();
+
 }
 
 async function insertMessage(message: Message) {
-    const result = await client.db('chat').collection('messages').insertOne(message);
-    console.log('Inserted message with id: ' + result.insertedId);
+    collection.insertOne(message);
+    
+    if ((await collection.countDocuments()) > 1) {
+        const oldest = await collection.findOne({}, { sort: { _id: 1 } });
+        collection.deleteOne({ _id: oldest?._id });
+    }
 }
 
 const sendHandler = (req: express.Request, res: express.Response ) => {
@@ -45,7 +50,6 @@ const sendHandler = (req: express.Request, res: express.Response ) => {
 
     insertMessage(message);
 
-    
     res.send('Message sent successfully');
 }
 

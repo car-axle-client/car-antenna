@@ -18,8 +18,6 @@ var corsOptions = {
     optionsSuccessStatus: 200
 }
 
-
-
 const limiter = rateLimit({
 	windowMs: 500, 
 	limit: 2, 
