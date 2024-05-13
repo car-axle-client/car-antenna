@@ -16,7 +16,7 @@ async function connect() {
 async function insertMessage(message: Message) {
     collection.insertOne(message);
     
-    if ((await collection.countDocuments()) > 1) {
+    if ((await collection.countDocuments()) > 30) {
         const oldest = await collection.findOne({}, { sort: { _id: 1 } });
         collection.deleteOne({ _id: oldest?._id });
     }
