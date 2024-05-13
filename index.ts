@@ -21,7 +21,7 @@ var corsOptions = {
 
 
 const limiter = rateLimit({
-	windowMs: 1000, 
+	windowMs: 500, 
 	limit: 2, 
 	standardHeaders: 'draft-7',
 	legacyHeaders: false,
