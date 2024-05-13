@@ -29,6 +29,7 @@ const limiter = rateLimit({
 
 app.use(limiter)
 app.use(express.json());
+app.use(cors(corsOptions));
 
 // there is no "/" on purpose due to making it difficult to block
 

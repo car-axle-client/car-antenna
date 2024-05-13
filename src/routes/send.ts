@@ -18,9 +18,7 @@ async function insertMessage(message: Message) {
 }
 
 const sendHandler = (req: express.Request, res: express.Response ) => {
-
-    res.header("Content-Type",'application/json');
-    res.header("Access-Control-Allow-Origin", "*");
+    res.setHeader('Content-Type', 'application/json');
     
     const valid = validationResult(req);
 
